@@ -8,6 +8,12 @@ seed(1)
 import codecs
 import os
 
+import sys
+PY3 = (sys.version_info[0] >= 3)
+
+if PY3:
+    unichr = chr
+
 def process(lang, codec):
     filepath = os.path.join("words", "%s.txt" % lang)
     outfile = os.path.join("outputs", "%s.txt" % lang)
