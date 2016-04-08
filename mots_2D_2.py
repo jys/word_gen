@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
+
 import click
 import numpy as np
 from numpy.random import choice, seed
-seed(1)
 import codecs
 import os
 
@@ -14,7 +15,11 @@ PY3 = (sys.version_info[0] >= 3)
 if PY3:
     unichr = chr
 
-def process(lang, codec):
+def process(lang, codec, random_seed=True):
+    if random_seed:
+        seed(None)
+    else:
+        seed(1)
     filepath = os.path.join("words", "%s.txt" % lang)
     outfile = os.path.join("outputs", "%s.txt" % lang)
     probafile = os.path.join("counts", "%s.bin" % lang)
@@ -23,7 +28,7 @@ def process(lang, codec):
     with codecs.open(filepath, "r", "ISO-8859-1") as lines:
         for l in  lines:
             dico.append(l[:-1])
-        
+
     count = np.fromfile(probafile, dtype="int32").reshape(256,256,256)
 
     s = count.sum(axis=2)
@@ -58,10 +63,14 @@ def process(lang, codec):
                     f.write(x + "\n")
 
 @click.command()
+@click.option('--random-seed/--no-random-seed', default=True)
 @click.option('--lang', default="FR", help='Language')
 @click.option('--codec', default="ISO-8859-1", help='Codec')
-def main(lang, codec):
-    process(lang, codec)
+def main(lang, codec, random_seed):
+    if random_seed:
+        print("Using a truly random seed")
+        print("Use --no-random-seed to get reproducible results")
+    process(lang, codec, random_seed=random_seed)
 
 if __name__ == '__main__':
     main()
