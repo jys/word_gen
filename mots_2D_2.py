@@ -15,6 +15,7 @@ PY3 = (sys.version_info[0] >= 3)
 if PY3:
     unichr = chr
 
+
 def process(lang, codec, random_seed=True):
     if random_seed:
         seed(None)
@@ -26,31 +27,31 @@ def process(lang, codec, random_seed=True):
 
     dico = []
     with codecs.open(filepath, "r", "ISO-8859-1") as lines:
-        for l in  lines:
+        for l in lines:
             dico.append(l[:-1])
 
-    count = np.fromfile(probafile, dtype="int32").reshape(256,256,256)
+    count = np.fromfile(probafile, dtype="int32").reshape(256, 256, 256)
 
     s = count.sum(axis=2)
-    st = np.tile(s.T, (256,1,1)).T
-    p = count.astype('float') / st
+    st = np.tile(s.T, (256, 1, 1)).T
+    with np.errstate(divide='ignore', invalid='ignore'):
+        p = count.astype('float') / st
     p[np.isnan(p)] = 0
 
-    #%%
+    # %%
     with codecs.open(outfile, "w", codec) as f:
-        K = 100
-        for TGT in range(12,13):
-
-        #K = 100
-        #for TGT in range(4,11):
+        # K = 100
+        for TGT in range(12, 13):
+            # K = 100
+            # for TGT in range(4,11):
             total = 0
             while total < 100:
                 i = 0
                 j = 0
                 res = u''
-                while not j==10:
-                    k=choice(range(256),1,p=p[i,j,:])[0]
-                    #res = res + chr(k)
+                while not j == 10:
+                    k = choice(range(256), 1, p=p[i, j, :])[0]
+                    # res = res + chr(k)
                     res = res + unichr(k)
                     i = j
                     j = k
@@ -62,6 +63,7 @@ def process(lang, codec, random_seed=True):
                     print(x)
                     f.write(x + "\n")
 
+
 @click.command()
 @click.option('--random-seed/--no-random-seed', default=True)
 @click.option('--lang', default="FR", help='Language')
@@ -71,6 +73,7 @@ def main(lang, codec, random_seed):
         print("Using a truly random seed")
         print("Use --no-random-seed to get reproducible results")
     process(lang, codec, random_seed=random_seed)
+
 
 if __name__ == '__main__':
     main()

@@ -7,7 +7,7 @@ https://sciencetonnante.wordpress.com/
 
 https://www.youtube.com/watch?v=YsR7r2378j0
 
-We just took the code he gave and mad it a bit more usable
+We just took the code he gave and made it a bit more usable
 
 ## Usage
 
@@ -19,7 +19,7 @@ Then run:
   python mots_2D.py && python mots_2D_2.py
 ```
 
-Result will be in outputs/FR.txt by default.
+Result will be in `outputs/FR.txt` by default.
 
 You can choose the language with ``--lang`` and the encoding with
 ``--codec``
